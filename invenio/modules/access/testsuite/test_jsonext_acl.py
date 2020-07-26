@@ -59,7 +59,7 @@ class TestAclExtension(InvenioTestCase):
         blob = {'_id': 1}
 
         json = Reader.translate(blob, SmartJson, model='test_access_base',
-                                master_format='json', namespace='testsuite')
+                                main_format='json', namespace='testsuite')
         self.assertIsNotNone(json)
         self.assertTrue('restriction' in json)
         self.assertTrue('email' in json['restriction'])

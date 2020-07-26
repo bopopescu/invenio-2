@@ -85,9 +85,9 @@ class TestVersionable(RegistryMixin, InvenioTestCase):
 
             @classmethod
             def create(cls, data, model='test_versionable',
-                       master_format='json', **kwargs):
+                       main_format='json', **kwargs):
                 document = Reader.translate(
-                    data, cls, master_format=master_format,
+                    data, cls, main_format=main_format,
                     model=model, namespace='testsuite', **kwargs)
                 cls.storage_engine.save_one(document.dumps())
                 return document
@@ -132,7 +132,7 @@ class TestHidden(RegistryMixin, InvenioTestCase):
         data = {'title': 'Test Title'}
 
         document = Reader.translate(
-            data, SmartJson, master_format='json',
+            data, SmartJson, main_format='json',
             model='test_hidden', namespace='testsuite')
 
         json = document.dumps()

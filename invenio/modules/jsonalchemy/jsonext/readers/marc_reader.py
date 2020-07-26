@@ -42,7 +42,7 @@ class MarcReader(Reader):
 
     """Marc reader."""
 
-    __master_format__ = 'marc'
+    __main_format__ = 'marc'
 
     split_marc = re.compile('<record.*?>.*?</record>', re.DOTALL)
 
@@ -158,7 +158,7 @@ class MarcReader(Reader):
             :meth:`~invenio.modules.jsonalchemy.readers.Reader._apply_rules`
         """
         for field_def in rule['rules'].get(
-                self._json.additional_info.master_format, []):
+                self._json.additional_info.main_format, []):
             if not self._evaluate_before_decorators(field_def):
                 continue
             marc_tag, elements = self._get_elements_from_blob(

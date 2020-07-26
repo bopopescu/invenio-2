@@ -38,7 +38,7 @@ class TestStorageEngineConfig(InvenioTestCase):
                                            'jsonext.engines.memory:'
                                            'MemoryStorage')
         DummyJson = class_factory('dummy')
-        database = {1: DummyJson({'_id': 1}, master_format='json',
+        database = {1: DummyJson({'_id': 1}, main_format='json',
                                  namespace='json')}
         self.app.config['DUMMY_MEMORYSTORAGE'] = {
             'database': database
@@ -51,7 +51,7 @@ class TestStorageEngineConfig(InvenioTestCase):
         from invenio.modules.jsonalchemy.jsonext.engines import memory
         self.app.config['DUMMY_ENGINE'] = memory.MemoryStorage
         DummyJson = class_factory('dummy')
-        database = {1: DummyJson({'_id': 1}, master_format='json',
+        database = {1: DummyJson({'_id': 1}, main_format='json',
                                  namespace='json')}
         self.app.config['DUMMY_MEMORYSTORAGE'] = {
             'database': database

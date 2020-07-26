@@ -25,7 +25,7 @@ Following example shows how to use this API for an easy use case::
     >>> from invenio.modules.uploader.api import run
     >>> blob = open('./testsuite/data/demo_record_marc_data.xml').read()
     >>> reader_info = dict(schema='xml')
-    >>> run('insert', blob, master_format='marc', reader_info=reader_info)
+    >>> run('insert', blob, main_format='marc', reader_info=reader_info)
 
 """
 
@@ -40,15 +40,15 @@ from . import signals
 from .tasks import translate, run_workflow
 
 
-def run(name, input_file, master_format='marc', reader_info={}, **kwargs):
+def run(name, input_file, main_format='marc', reader_info={}, **kwargs):
     """Entry point to run any of the modes of the uploader.
 
     :param name: Upload mode, see `~.config.UPLOADER_WORKFLOWS` for more info.
     :type name: str
-    :input_file: Input master format, typically the content of an XML file.
+    :input_file: Input main format, typically the content of an XML file.
     :type input_file: str
-    :param master_format: Input file format, for example `marc`
-    :type master_format: str
+    :param main_format: Input file format, for example `marc`
+    :type main_format: str
     :param reader_info: Any kind of information relevan to the reader, like for
         example char encoding or special characters.
     :type reader_info: dict
@@ -61,11 +61,11 @@ def run(name, input_file, master_format='marc', reader_info={}, **kwargs):
     """
     signals.uploader_started.send(mode=name,
                                   blob=input_file,
-                                  master_format=master_format,
+                                  main_format=main_format,
                                   **kwargs)
-    for chunk in split_blob(input_file, master_format,
+    for chunk in split_blob(input_file, main_format,
                             cfg['UPLOADER_NUMBER_RECORD_PER_WORKER'],
                             **reader_info):
         chord(translate.starmap(
-            [(blob, master_format, reader_info) for blob in chunk])
+            [(blob, main_format, reader_info) for blob in chunk])
         )(run_workflow.s(name=name, **kwargs))

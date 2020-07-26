@@ -25,10 +25,10 @@ from invenio.modules.jsonalchemy.parser import \
     DecoratorOnEvalBaseExtensionParser
 
 
-class OnlyIfMasterValueParser(DecoratorOnEvalBaseExtensionParser):
+class OnlyIfMainValueParser(DecoratorOnEvalBaseExtensionParser):
 
     """
-    Handle the ``@only_if_master_value`` decorator.
+    Handle the ``@only_if_main_value`` decorator.
 
     .. code-block:: ini
 
@@ -41,14 +41,14 @@ class OnlyIfMasterValueParser(DecoratorOnEvalBaseExtensionParser):
                         ........
     """
 
-    __parsername__ = 'only_if_master_value'
+    __parsername__ = 'only_if_main_value'
 
     @classmethod
     def parse_element(cls, indent_stack):
-        """Set ``only_if_master_value`` attribute to the rule."""
-        return (Keyword("@only_if_master_value").suppress() +
+        """Set ``only_if_main_value`` attribute to the rule."""
+        return (Keyword("@only_if_main_value").suppress() +
                 originalTextFor(nestedExpr())
-                ).setResultsName("only_if_master_value").setParseAction(
+                ).setResultsName("only_if_main_value").setParseAction(
                     lambda toks: toks[0])
 
     @classmethod
@@ -58,7 +58,7 @@ class OnlyIfMasterValueParser(DecoratorOnEvalBaseExtensionParser):
 
     @classmethod
     def evaluate(cls, value, namespace, args):
-        """Evaluate ``args`` with the master value from the input.
+        """Evaluate ``args`` with the main value from the input.
 
         :returns: a boolean depending on evaluated ``value``.
         """
@@ -69,4 +69,4 @@ class OnlyIfMasterValueParser(DecoratorOnEvalBaseExtensionParser):
         else:
             return all(evaluated)
 
-parser = OnlyIfMasterValueParser
+parser = OnlyIfMainValueParser

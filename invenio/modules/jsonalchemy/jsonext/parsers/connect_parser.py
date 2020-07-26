@@ -78,7 +78,7 @@ class ConnectParser(DecoratorAfterEvalBaseExtensionParser):
                     "Definition for '%(field)s' not found, maybe adding "
                     "@parse_first('%(field)s') could help" %
                     {'field': connect['connected_field']})
-            # Add it to all the rules (all master format, derived and
+            # Add it to all the rules (all main format, derived and
             # calculated)
             for connected_rules in connected_field['rules'].values():
                 for connected_rule in connected_rules:

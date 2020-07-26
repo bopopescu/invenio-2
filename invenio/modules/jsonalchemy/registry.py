@@ -87,7 +87,7 @@ readers_proxy = RegistryProxy('jsonext.readers',
                               'readers', registry_namespace=jsonext('jsonext'))
 
 
-readers = LazyDict(lambda: dict((module.reader.__master_format__,
+readers = LazyDict(lambda: dict((module.reader.__main_format__,
                                  module.reader)
                                 for module in readers_proxy))
 

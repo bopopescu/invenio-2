@@ -52,7 +52,7 @@ class Annotation(SmartJsonLD):
 
     @classmethod
     def create(cls, data, model='annotation'):
-        dic = Reader.translate(data, cls, model=model, master_format='json',
+        dic = Reader.translate(data, cls, model=model, main_format='json',
                                namespace="annotationsext")
         cls.storage_engine.save_one(dic.dumps())
         return dic

@@ -64,9 +64,9 @@ class Document(SmartJson):
     __storagename__ = 'documents'
 
     @classmethod
-    def create(cls, data, model='document_base', master_format='json',
+    def create(cls, data, model='document_base', main_format='json',
                **kwargs):
-        document = Reader.translate(data, cls, master_format=master_format,
+        document = Reader.translate(data, cls, main_format=main_format,
                                     model=model, namespace='documentext',
                                     **kwargs)
         cls.storage_engine.save_one(document.dumps())

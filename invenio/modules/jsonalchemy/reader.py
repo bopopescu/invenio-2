@@ -21,7 +21,7 @@
 
 It provides the common functionality to use by the readers.
 Typically this class should be used as a factory to create the concrete
-reader depending of the master format of the input.
+reader depending of the main format of the input.
 
     >>> from invenio.modules.jsonalchemy.reader import Reader
     >>> from invenio.modules.readers.api import Record
@@ -38,11 +38,11 @@ from .parser import FieldParser, ModelParser
 from .registry import functions, readers
 
 
-def split_blob(blob, master_format, slice_size=0, **kwargs):
+def split_blob(blob, main_format, slice_size=0, **kwargs):
     """TODO: Docstring for split_blob.
 
     :params blob: todo
-    :params master_format: todo
+    :params main_format: todo
     :params slice_size: todo
     :params kwargs: todo
     :returns: todo
@@ -56,10 +56,10 @@ def split_blob(blob, master_format, slice_size=0, **kwargs):
                 return
             yield chunk
     if slice_size == 0:
-        return readers[master_format].split_blob(blob, **kwargs)
+        return readers[main_format].split_blob(blob, **kwargs)
     else:
         return grouper(slice_size,
-                       readers[master_format].split_blob(blob, **kwargs))
+                       readers[main_format].split_blob(blob, **kwargs))
 
 
 class Reader(object):  # pylint: disable=R0921
@@ -69,8 +69,8 @@ class Reader(object):  # pylint: disable=R0921
     def __new__(cls, json, blob=None, **kwargs):  # pylint: disable=W0613
         """Implement object's instantiation."""
         try:
-            master_format = json.additional_info.master_format
-            return super(Reader, cls).__new__(readers[master_format])
+            main_format = json.additional_info.main_format
+            return super(Reader, cls).__new__(readers[main_format])
         except KeyError as e:
             raise KeyError("Not reader found for '%s'" % (e.message, ))
 
@@ -91,7 +91,7 @@ class Reader(object):  # pylint: disable=R0921
         raise NotImplementedError()
 
     @classmethod
-    def translate(cls, blob, json_class, master_format='json', **kwargs):
+    def translate(cls, blob, json_class, main_format='json', **kwargs):
         """Transform the incoming blob into a json structure (``json_class``).
 
         It uses the rules described in the field and model definitions.
@@ -99,7 +99,7 @@ class Reader(object):  # pylint: disable=R0921
         :param blob: incoming blob (like MARC)
         :param json_class: Any subclass of
             :class:`~invenio.modules.jsonalchemy.wrappers.SmartJson`
-        :param master_format: Master format of the input blob.
+        :param main_format: Main format of the input blob.
         :param kwargs: parameter to pass to json_class
 
         :return: New object of ``json_class`` type containing the result of the
@@ -112,7 +112,7 @@ class Reader(object):  # pylint: disable=R0921
         if not issubclass(json_class, SmartJson):
             raise ReaderException("The json class must be of type 'SmartJson'")
 
-        json = json_class(master_format=master_format, **kwargs)
+        json = json_class(main_format=main_format, **kwargs)
         # fill up with all possible fields
         fields = ModelParser.resolve_models(json.model_info.names,
                                             json.additional_info.namespace
@@ -339,7 +339,7 @@ class Reader(object):  # pylint: disable=R0921
         :param rule: Current rule for the `json_id`
         """
         for field_def in rule['rules'].get(
-                self._json.additional_info.master_format, []):
+                self._json.additional_info.main_format, []):
             if not self._evaluate_before_decorators(field_def):
                 continue
             for elements in \
@@ -490,7 +490,7 @@ class Reader(object):  # pylint: disable=R0921
 
         If the information regarding the field definition is no present, the
         first one available will be used: first ``creator`` rules for the
-        master format of the json, then ``derived`` and finally ``calculated``.
+        main format of the json, then ``derived`` and finally ``calculated``.
         For each of them if more than one definition is present the first one
         will be used.
 
@@ -510,10 +510,10 @@ class Reader(object):  # pylint: disable=R0921
             field_type = 'UNKNOWN'
 
         if field_def is None:
-            if self._json.additional_info.master_format in \
+            if self._json.additional_info.main_format in \
                     rule.get('rules', {}):
                 field_def = rule['rules'][
-                    self._json.additional_info.master_format][0]
+                    self._json.additional_info.main_format][0]
                 field_type = 'creator'
             elif 'derived' in rule.get('rules', {}):
                 field_def = rule['rules']['derived'][0]
@@ -590,11 +590,11 @@ class Reader(object):  # pylint: disable=R0921
                 return False
         return True
 
-    def _evaluate_on_decorators(self, field_def, master_value):
+    def _evaluate_on_decorators(self, field_def, main_value):
         """Evaluate all the on decorators (they must return a boolean."""
         for name, content in six.iteritems(field_def['decorators']['on']):
             if not FieldParser.decorator_on_extensions()[name]\
-                    .evaluate(master_value,
+                    .evaluate(main_value,
                               self._json.additional_info.namespace, content):
                 return False
         return True

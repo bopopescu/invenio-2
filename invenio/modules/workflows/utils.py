@@ -47,7 +47,7 @@ def convert_marcxml_to_bibfield(marcxml, model=None):
         marcxml = marcxml.encode(errors='ignore')
     return Reader.translate(marcxml,
                             SmartJson,
-                            master_format='marc',
+                            main_format='marc',
                             namespace='recordext',
                             model=model)
 

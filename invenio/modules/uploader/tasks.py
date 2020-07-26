@@ -32,11 +32,11 @@ from .errors import UploaderException
 
 
 @celery.task
-def translate(blob, master_format, kwargs=None):
-    """Translate from the `master_format` to `JSON`.
+def translate(blob, main_format, kwargs=None):
+    """Translate from the `main_format` to `JSON`.
 
     :param blob: String contain the input file.
-    :param master_format: Format of the blob, it will used to decide which
+    :param main_format: Format of the blob, it will used to decide which
         reader to use.
     :param kwargs: Arguments to be used by the reader.
         See :class:`invenio.modules.jsonalchemy.reader.Reader`
@@ -46,7 +46,7 @@ def translate(blob, master_format, kwargs=None):
 
     """
     return (blob,
-            Reader.translate(blob, Record, master_format,
+            Reader.translate(blob, Record, main_format,
                              **(kwargs or dict())).dumps())
 
 

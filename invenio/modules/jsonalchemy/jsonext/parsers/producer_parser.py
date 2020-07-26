@@ -48,7 +48,7 @@ class ProducerParser(FieldBaseExtensionParser):
 
     The parameter passed to the producer could be used by the producer for
     example to decide if the current producer rule will be applied depending
-    on the tag from the master format. Typically is a string or a `regex` but
+    on the tag from the main format. Typically is a string or a `regex` but
     it should be double check with the producer implementation.
 
     To view the list of possible producer, check the `producer` folder inside

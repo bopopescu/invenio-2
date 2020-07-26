@@ -33,7 +33,7 @@ def insert(blobs):
     from .api import run
     for blob in blobs:
         filename = getattr(blob, 'name', None)
-        run('insert', blob.read(), master_format='marc',
+        run('insert', blob.read(), main_format='marc',
             reader_info=dict(schema='xml'), filename=filename)
 
 

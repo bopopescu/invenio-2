@@ -43,17 +43,17 @@ class Record(SmartJson):
         """Create a Record instance."""
         if not json or '__meta_metadata__' not in json:
             kwargs['namespace'] = kwargs.get('namespace', 'recordext')
-            kwargs['master_format'] = kwargs.get('master_format', 'json')
+            kwargs['main_format'] = kwargs.get('main_format', 'json')
         super(Record, self).__init__(json, **kwargs)
         self.get_blob = lambda: self.blob
 
     @classmethod
-    def create(cls, blob, master_format, **kwargs):
+    def create(cls, blob, main_format, **kwargs):
         """Create a new record from the blob using the right reader."""
-        return Reader.translate(blob, Record, master_format, **kwargs)
+        return Reader.translate(blob, Record, main_format, **kwargs)
 
     @classmethod
-    def create_many(cls, blobs, master_format, **kwargs):
+    def create_many(cls, blobs, main_format, **kwargs):
         """Create many new record from the blob using the right reader."""
         raise NotImplementedError()
 
@@ -71,16 +71,16 @@ class Record(SmartJson):
                 return Record(json)
             except (NoResultFound, AttributeError):
                 pass
-        # try to retrieve the record from the master format if any
+        # try to retrieve the record from the main format if any
         # this might be deprecated in the near future as soon as json will
-        # become the master format, until then ...
+        # become the main format, until then ...
         blob = cls.get_blob(recid)
         record_sql = RecordModel.query.get(recid)
         if record_sql is None or blob is None:
             return None
         additional_info = record_sql.additional_info \
             if record_sql.additional_info \
-            else {'master_format': 'marc'}
+            else {'main_format': 'marc'}
         record = cls.create(blob, **additional_info)
         record['modification_date'] = record_sql.modification_date
         record['creation_date'] = record_sql.creation_date
@@ -100,7 +100,7 @@ class Record(SmartJson):
         try:
             blob = Bibfmt.query.filter(
                 Bibfmt.id_bibrec == recid,
-                or_(Bibfmt.kind == 'master', Bibfmt.format == 'xm')).one()
+                or_(Bibfmt.kind == 'main', Bibfmt.format == 'xm')).one()
             return decompress(blob.value)
         except (NoResultFound, MultipleResultsFound):
             current_app.logger.exception(
@@ -158,7 +158,7 @@ class Record(SmartJson):
         record_sql = RecordModel.query.get(self['recid'])
         record_sql.modification_date = self['modification_date']
         record_sql.creation_date = self['creation_date']
-        record_sql.master_format = self.additional_info.master_format
+        record_sql.main_format = self.additional_info.main_format
         record_sql.additional_info = self.additional_info
         from invenio.ext.sqlalchemy import db
         db.session.merge(record_sql)

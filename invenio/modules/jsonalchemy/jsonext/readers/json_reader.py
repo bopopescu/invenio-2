@@ -28,7 +28,7 @@ from invenio.modules.jsonalchemy.reader import Reader
 class JsonReader(Reader):
     """JSON reader."""
 
-    __master_format__ = 'json'
+    __main_format__ = 'json'
 
     @staticmethod
     def split_blob(blob, schema=None, **kwargs):

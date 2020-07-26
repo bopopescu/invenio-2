@@ -66,7 +66,7 @@ class TestToInt(InvenioTestCase):
               '<subfield code="b">Value</subfield></datafield></record>' \
               '</collection>'
         from invenio.modules.records.api import Record
-        simple_record = Record.create(xml, master_format='marc',
+        simple_record = Record.create(xml, main_format='marc',
                                       model="test_toint",
                                       namespace='testsuite')
 
@@ -78,7 +78,7 @@ class TestToInt(InvenioTestCase):
               '<subfield code="b">Value</subfield></datafield></record>' \
               '</collection>'
 
-        simple_record = Record.create(xml, master_format='marc',
+        simple_record = Record.create(xml, main_format='marc',
                                       model="test_toint",
                                       namespace='testsuite')
         self.assertEqual(simple_record['with_integers'][0]['some_int'], 9999)

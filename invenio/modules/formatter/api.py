@@ -413,11 +413,11 @@ def get_preformatted_record(recID, of, decompress=zlib.decompress):
 
     except SQLAlchemyError:
         return None
-    # Decide whether to use DB slave:
+    # Decide whether to use DB subordinate:
     # if of in ('xm', 'recstruct'):
-    #     run_on_slave = False # for master formats, use DB master
+    #     run_on_subordinate = False # for main formats, use DB main
     # else:
-    #     run_on_slave = True # for other formats, we can use DB slave
+    #     run_on_subordinate = True # for other formats, we can use DB subordinate
 
 
 def get_preformatted_record_date(recID, of):

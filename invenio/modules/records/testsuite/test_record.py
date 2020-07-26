@@ -91,7 +91,7 @@ class TestRecord(InvenioTestCase):
         xmltext = pkg_resources.resource_string(
             'invenio.testsuite',
             os.path.join('data', 'demo_record_marc_data.xml'))
-        recs = [record for record in Record.create_many(xmltext, master_format='marc')]
+        recs = [record for record in Record.create_many(xmltext, main_format='marc')]
         self.assertEqual(141, len(recs))
 
     def test_accented_unicode_letterst_test(self):
@@ -108,13 +108,13 @@ class TestRecord(InvenioTestCase):
           </datafield>
         </record>
         '''
-        rec = Record.create(xml, master_format='marc', namespace='testsuite')
+        rec = Record.create(xml, main_format='marc', namespace='testsuite')
         self.assertEquals(rec['authors[0].full_name'], 'Döè1, John')
         self.assertEquals(rec['title.title'], 'Пушкин')
 
     def test_create_empty_record(self):
         """Record - Create empty record."""
-        rec = Record(master_format='marc', namespace='testsuite')
+        rec = Record(main_format='marc', namespace='testsuite')
         self.assertTrue('__meta_metadata__' in rec)
         self.assertEquals(list(rec.keys()), ['__meta_metadata__'])
         rec['title'] = {'title': 'My title'}
@@ -125,7 +125,7 @@ class TestRecord(InvenioTestCase):
 
     def test_validate(self):
         """Record - Validate record."""
-        rec = Record(master_format='marc', namespace='testsuite')
+        rec = Record(main_format='marc', namespace='testsuite')
         self.assertTrue('__meta_metadata__' in rec)
         self.assertTrue('recid' in rec.validate())
         rec['recid'] = '1'
@@ -177,7 +177,7 @@ class TestLegacyExport(InvenioTestCase):
               </datafield>
             </record>
         '''
-        rec = Record.create(blob, master_format='marc', namespace='testsuite')
+        rec = Record.create(blob, main_format='marc', namespace='testsuite')
         recstruct, _, _ = create_record(blob)
         json_recstruct, _, _ = create_record(rec.legacy_export_as_marc())
         self.assertTrue(records_identical(json_recstruct, recstruct,
@@ -206,7 +206,7 @@ class TestLegacyExport(InvenioTestCase):
               </datafield>
             </record>
         '''
-        rec = Record.create(blob, master_format='marc', namespace='testsuite')
+        rec = Record.create(blob, main_format='marc', namespace='testsuite')
         json_recstruct = rec.legacy_create_recstruct()
         recstruct, _, _ = create_record(blob)
         self.assertTrue(records_identical(json_recstruct, recstruct,
@@ -556,9 +556,9 @@ class TestMarcRecordCreation(InvenioTestCase):
                 </datafield>
             </record>
         """
-        r = Record.create(xml, master_format='marc', namespace='testsuite', schema='xml')
+        r = Record.create(xml, main_format='marc', namespace='testsuite', schema='xml')
 
-        self.assertEquals(r.additional_info.master_format, 'marc')
+        self.assertEquals(r.additional_info.main_format, 'marc')
         self.assertTrue('authors' in r)
         self.assertEquals(r['authors[0].full_name'], "Efstathiou, G P")
         self.assertEquals(len(r['authors']), 5)
@@ -587,7 +587,7 @@ class TestMarcRecordCreation(InvenioTestCase):
         # mistake.
         if _select_parser() != 'lxml':
             with self.assertRaises(ReaderException):
-                Record.create(blob, master_format='marc',
+                Record.create(blob, main_format='marc',
                               namespace='testsuite', schema='xml')
 
 

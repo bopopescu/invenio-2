@@ -30,7 +30,7 @@ def get_modification_date(recid):
     #
     # When bibupload inserts/updates records it sets hstRECORD.job_date=t1 and
     # bibfmt.last_updated=t1 and bibrec.modification_date=t2 (with t2 > t1).
-    # This is intended behaviour in master (see ticket #1431).
+    # This is intended behaviour in main (see ticket #1431).
     #
     # Revision verifier checks 005 on upload against hstRECORD.job_date
     # (i.e. t1).

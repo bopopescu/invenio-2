@@ -178,27 +178,27 @@ def save_record(step):
     return _save
 
 
-def save_master_format(step):
-    """Put the master format info the `bfmt` DB table."""
-    def _save_master_format(obj, eng):
+def save_main_format(step):
+    """Put the main format info the `bfmt` DB table."""
+    def _save_main_format(obj, eng):
         from invenio.base.helpers import utf8ifier
         from invenio.modules.formatter.models import Bibfmt
         from invenio.ext.sqlalchemy import db
         from zlib import compress
-        eng.log.info('Saving master record to DB')
+        eng.log.info('Saving main record to DB')
         bibfmt = Bibfmt(id_bibrec=obj[1]['recid'],
-                        format=obj[1].additional_info.master_format,
-                        kind='master',
+                        format=obj[1].additional_info.main_format,
+                        kind='main',
                         last_updated=obj[1]['modification_date'],
                         value=compress(utf8ifier(
                             obj[0]
-                            if obj[1].additional_info.master_format == 'marc'
+                            if obj[1].additional_info.main_format == 'marc'
                             else obj[1].legacy_export_as_marc()
                         )))
         db.session.add(bibfmt)
         db.session.commit()
-        eng.log.info('Master record saved to DB')
-    return _save_master_format
+        eng.log.info('Main record saved to DB')
+    return _save_main_format
 
 
 def update_pidstore(step):
@@ -311,7 +311,7 @@ def legacy(step):
     """Update legacy bibxxx tables."""
     def _legacy(obj, eng):
         record = obj[1]
-        if record.additional_info.master_format != 'marc':
+        if record.additional_info.main_format != 'marc':
             return
         import marshal
         from invenio.legacy.bibupload.engine import (

@@ -256,7 +256,7 @@ class FieldParser(object):
     fields"""
 
     _legacy_field_matchings = {}
-    """Dictionary containing matching between the legacy master format and the
+    """Dictionary containing matching between the legacy main format and the
     current json"""
 
     _field_extensions = None
@@ -426,8 +426,8 @@ class FieldParser(object):
                     hidden: True/False,
                     aliases: [],
                     pid: num/None,
-                    rules: {'master_format_1': [{rule1}, {rule2}, ...],
-                            'master_format_2': [....],
+                    rules: {'main_format_1': [{rule1}, {rule2}, ...],
+                            'main_format_2': [....],
                              ......
                             'calculated': [....],
                             'derived': [...]}
@@ -442,7 +442,7 @@ class FieldParser(object):
 
             {'source_format' : source_format/calculated/derived,
              'source_tag'    : source_tag/None,
-             'function'      : python code to apply to the master value,
+             'function'      : python code to apply to the main value,
              'decorators'    : {}
             }
 
@@ -761,7 +761,7 @@ class ModelParser(object):
                         model_def, self.__namespace)
 
 
-def guess_legacy_field_names(fields, master_format, namespace):
+def guess_legacy_field_names(fields, main_format, namespace):
     """
     Find the equivalent JSON field for the legacy field(s).
 
@@ -780,7 +780,7 @@ def guess_legacy_field_names(fields, master_format, namespace):
     for field in fields:
         try:
             res[field] = FieldParser.legacy_field_matchings(
-                namespace)[master_format].get(field, [])
+                namespace)[main_format].get(field, [])
         except (KeyError, TypeError):
             res[field] = []
     return res
@@ -979,7 +979,7 @@ class DecoratorOnEvalBaseExtensionParser(DecoratorBaseExtensionParser):  # pylin
     @classmethod
     def evaluate(cls, value, namespace, args):
         """
-        Evaluate ``args`` with the master value from the input.
+        Evaluate ``args`` with the main value from the input.
 
         :returns: a boolean depending on them.
         """

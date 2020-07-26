@@ -34,7 +34,7 @@ from invenio.modules.uploader.uploader_tasks import \
     reserve_record_id, \
     retrieve_record_id_from_pids, \
     return_recordids_only, \
-    save_master_format, \
+    save_main_format, \
     save_record, \
     update_pidstore,\
     validate
@@ -68,7 +68,7 @@ class insert(object):
         manage_attached_documents(step=4),
         save_record(step=5),
         update_pidstore(step=6),
-        save_master_format(step=7),
+        save_main_format(step=7),
         legacy(step=8),
     ]
 

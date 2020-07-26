@@ -85,9 +85,9 @@ def make_record(values, is_dump=True):
     Export recjson from drafts
     """
     if is_dump:
-        record = Record(json=values, master_format='marc')
+        record = Record(json=values, main_format='marc')
     else:
-        record = Record(master_format='marc')
+        record = Record(main_format='marc')
         for k, v in six.iteritems(values):
             record[k] = v
     return record

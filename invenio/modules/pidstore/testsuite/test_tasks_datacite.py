@@ -52,7 +52,7 @@ class DataCiteTasksTest(InvenioTestCase):
                 '10.1234/invenio.1234',
                 'recid': 1,
             },
-            master_format='json'
+            main_format='json'
         )
         get_record_patch.return_value = r
 

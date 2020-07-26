@@ -25,7 +25,7 @@ depends_on = []
 
 
 def info():
-    return "Increase integer size for id to match master-branch"
+    return "Increase integer size for id to match main-branch"
 
 
 def do_upgrade():

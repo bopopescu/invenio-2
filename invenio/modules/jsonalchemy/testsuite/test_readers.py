@@ -81,7 +81,7 @@ class TestReader(InvenioTestCase):
         self.assertRaises(
             ReaderException, Reader.translate, blob={}, json_class=dict)
         self.assertRaises(NotImplementedError, Reader.add, json=SmartJson(
-            master_format='json'), fields='foo')
+            main_format='json'), fields='foo')
 
 
 class TestJSONReader(InvenioTestCase):
@@ -123,7 +123,7 @@ class TestJSONReader(InvenioTestCase):
                 'title': {'title': 'ALEPH experiment: Candidate of Higgs boson production'}}
 
         json = Reader.translate(
-            blob, SmartJson, master_format='json', namespace='testsuite')
+            blob, SmartJson, main_format='json', namespace='testsuite')
         self.assertIsNotNone(json)
         self.assertTrue(all([key in json for key in blob.keys()]))
         self.assertTrue('__meta_metadata__' in json)
@@ -144,7 +144,7 @@ class TestJSONReader(InvenioTestCase):
                 'keywords': [{'term': 'LEP'}]}
 
         json = Reader.translate(
-            blob, SmartJson, master_format='json', namespace='testsuite')
+            blob, SmartJson, main_format='json', namespace='testsuite')
         self.assertIsNotNone(json)
         self.assertTrue('abstract' in json)
         Reader.add(json, 'number_of_authors', blob)
@@ -272,7 +272,7 @@ class TestMarcReader(InvenioTestCase):
             </record>
         """
         reader = Reader(
-            SmartJson(master_format='marc', schema='xml', namespace='testsuite'), blob=xml)
+            SmartJson(main_format='marc', schema='xml', namespace='testsuite'), blob=xml)
         reader._prepare_blob()
 
         self.assertTrue(reader.rec_tree)
@@ -619,7 +619,7 @@ class TestMarcReader(InvenioTestCase):
         blob = list(split_blob(xml, 'marc', schema='foo'))
         self.assertTrue(len(blob) == 0)
         blob = list(split_blob(xml, 'marc'))[0]
-        json = Record.create(blob, master_format='marc', namespace='testsuite')
+        json = Record.create(blob, main_format='marc', namespace='testsuite')
         import signal
 
         def timeout():
@@ -970,11 +970,11 @@ class TestMarcReader(InvenioTestCase):
         self.assertTrue(len(blob) == 0)
         blob = list(split_blob(xml, 'marc'))[0]
         json = Reader.translate(
-            blob, SmartJson, master_format='marc', namespace='testsuite')
+            blob, SmartJson, main_format='marc', namespace='testsuite')
         self.assertIsNotNone(json)
         self.assertTrue('__meta_metadata__' in json)
         self.assertEquals(
-            json['__meta_metadata__']['__additional_info__']['master_format'], 'marc')
+            json['__meta_metadata__']['__additional_info__']['main_format'], 'marc')
         self.assertTrue('authors' in json)
         self.assertEquals(json['authors'][0]['full_name'], "Efstathiou, G P")
         self.assertEquals(len(json['authors']), 5)
@@ -988,7 +988,7 @@ class TestMarcReader(InvenioTestCase):
         self.assertEquals(len(json['reference']), 36)
 
         json = Reader.translate(
-            blob, SmartJson, master_format='marc', namespace='testsuite', model='test_model')
+            blob, SmartJson, main_format='marc', namespace='testsuite', model='test_model')
         self.assertEquals(json.model_info.names, ['test_model', ])
         self.assertEquals(json.additional_info.namespace, 'testsuite')
         self.assertEquals(json.class2(), 'class2')
@@ -1014,7 +1014,7 @@ class TestMarcReader(InvenioTestCase):
             </record>
         '''
         json = Reader.translate(
-            blob, SmartJson, master_format='marc', namespace='testsuite')
+            blob, SmartJson, main_format='marc', namespace='testsuite')
         self.assertIsNotNone(json)
         self.assertTrue('title' in json)
         self.assertEquals(json['title']['title'], 'Title in 2451_')
@@ -1028,7 +1028,7 @@ class TestMarcReader(InvenioTestCase):
             </record>
         '''
         json = Reader.translate(
-            blob, SmartJson, master_format='marc', namespace='testsuite')
+            blob, SmartJson, main_format='marc', namespace='testsuite')
         self.assertIsNotNone(json)
         self.assertTrue('title' in json)
         self.assertEquals(json['title']['title'], 'Title in 24522')
@@ -1114,7 +1114,7 @@ class TestMarcReader(InvenioTestCase):
           </record>
           '''
         json = Reader.translate(
-            blob, SmartJson, master_format='marc', namespace='testsuite')
+            blob, SmartJson, main_format='marc', namespace='testsuite')
         self.assertIsNotNone(json)
         del json['title']
 
@@ -1209,7 +1209,7 @@ class TestMarcReader(InvenioTestCase):
           </record>
           '''
         json = Reader.translate(
-            blob, SmartJson, master_format='marc', namespace='testsuite', model='test_model')
+            blob, SmartJson, main_format='marc', namespace='testsuite', model='test_model')
         self.assertIsNotNone(json)
 
         del json['title']
@@ -1301,7 +1301,7 @@ class TestMarcReader(InvenioTestCase):
           </record>
           '''
         json = Reader.translate(
-            blob, SmartJson, master_format='marc', namespace='testsuite')
+            blob, SmartJson, main_format='marc', namespace='testsuite')
         self.assertIsNotNone(json)
         del json['title']
 
@@ -1346,7 +1346,7 @@ class TestMarcReader(InvenioTestCase):
             {'700__a': 'Lasenby, A N'},
         ]
         json = Reader.translate(
-            blob, SmartJson, master_format='marc', namespace='testsuite')
+            blob, SmartJson, main_format='marc', namespace='testsuite')
         self.assertIsNotNone(json)
 
         json_for_marc = json.produce('json_for_marc')
@@ -1395,7 +1395,7 @@ class TestMarcReader(InvenioTestCase):
         ]
 
         json = Reader.translate(
-            blob, SmartJson, master_format='marc', namespace='testsuite')
+            blob, SmartJson, main_format='marc', namespace='testsuite')
         self.assertIsNotNone(json)
 
         # To avoid duplicates we remove rules that overlap
@@ -1424,7 +1424,7 @@ class TestMarcReader(InvenioTestCase):
             {'502__b': 'type', '502__c': 'University of Fictive Science'},
         ]
 
-        json = Record.create(blob, master_format='marc', namespace='testsuite')
+        json = Record.create(blob, main_format='marc', namespace='testsuite')
 
         # To avoid duplicates we remove rules that overlap
         del FieldParser.field_definitions('testsuite')['title']['producer'][
@@ -1448,7 +1448,7 @@ class TestMarcReader(InvenioTestCase):
             {'502__c': 'University of Fictive Science'},
         ]
 
-        json = Record.create(blob, master_format='marc', namespace='testsuite')
+        json = Record.create(blob, main_format='marc', namespace='testsuite')
 
         # To avoid duplicates we remove rules that overlap
         del FieldParser.field_definitions('testsuite')['title']['producer'][

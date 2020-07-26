@@ -62,7 +62,7 @@ class InvenioDbQueryWildcardLimitError(Exception):
         self.res = res
 
 
-def run_sql(sql, param=None, n=0, with_desc=False, with_dict=False, run_on_slave=False, connection=None):
+def run_sql(sql, param=None, n=0, with_desc=False, with_dict=False, run_on_subordinate=False, connection=None):
     """Run SQL on the server with PARAM and return result.
 
     :param param: tuple of string params to insert in the query (see
@@ -103,9 +103,9 @@ def run_sql(sql, param=None, n=0, with_desc=False, with_dict=False, run_on_slave
     if param:
         param = tuple(param)
 
-    #FIXME port database slave support
+    #FIXME port database subordinate support
     dbhost = cfg['CFG_DATABASE_HOST']
-    if run_on_slave and cfg['CFG_DATABASE_SLAVE']:
+    if run_on_subordinate and cfg['CFG_DATABASE_SLAVE']:
         dbhost = cfg['CFG_DATABASE_SLAVE']
 
     if 'sql-logger' in cfg.get('CFG_DEVEL_TOOLS', []):
@@ -141,7 +141,7 @@ def run_sql(sql, param=None, n=0, with_desc=False, with_dict=False, run_on_slave
         return cur
 
 
-def run_sql_many(query, params, limit=None, run_on_slave=False):
+def run_sql_many(query, params, limit=None, run_on_subordinate=False):
     """Run SQL on the server with PARAM.
 
     This method does executemany and is therefore more efficient than execute
@@ -168,7 +168,7 @@ def run_sql_many(query, params, limit=None, run_on_slave=False):
             return
 
     dbhost = cfg['CFG_DATABASE_HOST']
-    if run_on_slave and cfg['CFG_DATABASE_SLAVE']:
+    if run_on_subordinate and cfg['CFG_DATABASE_SLAVE']:
         dbhost = cfg['CFG_DATABASE_SLAVE']
     i = 0
     r = None
@@ -220,7 +220,7 @@ def log_sql_query(dbhost, sql, param=None):
         print(message, file=sys.stderr)
 
 
-def get_table_update_time(tablename, run_on_slave=False):
+def get_table_update_time(tablename, run_on_subordinate=False):
     """Return update time of TABLENAME.  TABLENAME can contain
        wildcard `%' in which case we return the maximum update time
        value.
@@ -235,7 +235,7 @@ def get_table_update_time(tablename, run_on_slave=False):
     # SELECT UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE
     # table_name='collection'.
     res = run_sql("SHOW TABLE STATUS LIKE %s", (tablename,),
-                  run_on_slave=run_on_slave)
+                  run_on_subordinate=run_on_subordinate)
     update_times = [] # store all update times
     for row in res:
         if type(row[10]) is long or \
@@ -250,14 +250,14 @@ def get_table_update_time(tablename, run_on_slave=False):
             update_times.append(str(row[11]))
     return max(update_times)
 
-def get_table_status_info(tablename, run_on_slave=False):
+def get_table_status_info(tablename, run_on_subordinate=False):
     """Return table status information on TABLENAME.  Returned is a
        dict with keys like Name, Rows, Data_length, Max_data_length,
        etc.  If TABLENAME does not exist, return empty dict.
     """
     # Note: again a hack so that it works on all MySQL 4.0, 4.1, 5.0
     res = run_sql("SHOW TABLE STATUS LIKE %s", (tablename,),
-                  run_on_slave=run_on_slave)
+                  run_on_subordinate=run_on_subordinate)
     table_status_info = {} # store all update times
     for row in res:
         if type(row[10]) is long or \
@@ -297,7 +297,7 @@ def wash_table_column_name(colname):
         raise Exception('The table column %s is not valid.' % repr(colname))
     return colname
 
-def real_escape_string(unescaped_string, run_on_slave=False):
+def real_escape_string(unescaped_string, run_on_subordinate=False):
     """
     Escapes special characters in the unescaped string for use in a DB query.
 
@@ -307,7 +307,7 @@ def real_escape_string(unescaped_string, run_on_slave=False):
     :return: Returns the escaped string
     """
     dbhost = cfg['CFG_DATABASE_HOST']
-    if run_on_slave and cfg['CFG_DATABASE_SLAVE']:
+    if run_on_subordinate and cfg['CFG_DATABASE_SLAVE']:
         dbhost = cfg['CFG_DATABASE_SLAVE']
     connection_object = db.engine.raw_connection()
     escaped_string = connection_object.escape(unescaped_string)

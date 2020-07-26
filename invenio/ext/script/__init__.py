@@ -108,7 +108,7 @@ def check_for_software_updates(flash_message=False):
                           ' is released')
 
         release_notes = 'https://raw.githubusercontent.com/' \
-            'inveniosoftware/invenio/master/RELEASE-NOTES'
+            'inveniosoftware/invenio/main/RELEASE-NOTES'
 
         webFile = urllib.request.urlopen(release_notes)
 

@@ -65,7 +65,7 @@ class TestOldValue(InvenioTestCase):
               <subfield code="q">Bobby Guy</subfield>
               </datafield></record></collection>'''
 
-        simple_record = Record.create(xml, master_format='marc',
+        simple_record = Record.create(xml, main_format='marc',
                                       model="test_oldvalue",
                                       namespace='testsuite')
         self.assertEqual(simple_record['dates']['birth'], None)

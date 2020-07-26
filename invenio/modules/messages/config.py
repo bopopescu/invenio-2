@@ -46,7 +46,7 @@ CFG_WEBMESSAGE_STATUS_CODE = \
         'REMINDER': 'M'
     }
 # values indicating which results field to display while writing a message
-# TODO: used only in 'master' files
+# TODO: used only in 'main' files
 CFG_WEBMESSAGE_RESULTS_FIELD = \
     {
         'USER': 'user',
